@@ -134,16 +134,16 @@ def test_great_circle_distance(armageddon):
                     [0.00000000e+00, 2.24656571e+05, 1.28581437e+05],
                     [2.72529953e+05, 2.08175028e+05, 1.96640630e+05]])
 
-    data2 = np.array([[1336847.19841416, 297512.21050142],
-                    [1223440.76045278, 281091.18822609],
-                    [1334757.37253881, 200251.89330541]])
+    data2 = np.array([[1.336847198e+06, 2.975122105e+05],
+                    [1.223440760e+06, 2.810911882e+05],
+                    [1.334757373e+06, 2.002518933e+05]])
 
     dist1 = armageddon.great_circle_distance(pnts1, pnts2)
     dist2 = armageddon.great_circle_distance(pnts3, pnts4)
     assert np.allclose(data1, dist1, rtol=1.0e-4)
     assert np.allclose(data2, dist2, rtol=1.0e-4)
 
-
+# @mark.xfail
 def test_locator_postcodes(loc):
 
     latlon = (52.2074, 0.1170)
@@ -155,7 +155,7 @@ def test_locator_postcodes(loc):
         for element in result:
             assert type(element) is list
 
-
+ 
 def test_locator_sectors(loc):
 
     latlon = (52.2074, 0.1170)
