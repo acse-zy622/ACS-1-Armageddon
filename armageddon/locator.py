@@ -35,34 +35,7 @@ def great_circle_distance(latlon1, latlon2):
     [[1.286e+05]
      [6.378e+04]]
     """
-    Rp = 6371000
-    
-    
-    latlon1 = np.array(latlon1)*np.pi/180
-    latlon2 = np.array(latlon2)*np.pi/180
-    
-    if latlon1.ndim == 1:
-        latlon1 = latlon1.reshape(1,2)
-
-    if latlon2.ndim == 1:
-        latlon2 = latlon2.reshape(1,2)
-    
-    distance = np.empty((len(latlon1), len(latlon2)), float)
-    lat1 = latlon1[:, 0]
-    lat2 = latlon2[:, 0]
-    lon1 = latlon1[:, 1]
-    lon2 = latlon2[:, 1]
-
-
-    for i in range(len(latlon1)):
-        
-        for j in range(len(latlon2)):
-            
-            num = np.sqrt((np.cos(lat2[j])*np.sin(abs(lon1[i]-lon2[j])))**2+(np.cos(lat1[i])*np.sin(lat2[j])-np.sin(lat1[i])*np.cos(lat2[j])*np.cos(abs(lon1[i]-lon2[j])))**2)
-            den = np.sin(lat1[i])*np.sin(lat2[j])+np.cos(lat1[i])*np.cos(lat2[j])*np.cos(abs(lon1[i]-lon2[j]))
-            dis = Rp*np.arctan(num/den)
-            distance[i][j] = dis
-    return distance
+   
 
 
 
@@ -122,8 +95,21 @@ class PostcodeLocator(object):
         >>> locator.get_postcodes_by_radius((51.4981, -0.1773),
                                             [0.4e3, 0.2e3], True)
         """
-
-        return [[]]
+       
+        place_list = []
+        selector = 'Sector_Postcode' if sector is True else 'Postcode'
+        df = self.postcode_df
+        df['Distance'] = self.norm(
+            np.stack(
+                [df['Latitude'].to_numpy(), df['Longitude'].to_numpy()],
+                axis=1), X
+        )
+        for r in radii:
+            place_list.append(list(
+                set(df[df['Distance'] < r][selector].to_list())
+            ))
+        return place_list
+        
 
     def get_population_of_postcode(self, postcodes, sector=False):
         """

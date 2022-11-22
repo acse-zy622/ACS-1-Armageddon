@@ -1,4 +1,5 @@
 import folium
+import os
 
 
 def plot_circle(lat, lon, radius, map=None, **kwargs):
@@ -28,11 +29,14 @@ def plot_circle(lat, lon, radius, map=None, **kwargs):
     >>> import folium
     >>> armageddon.plot_circle(52.79, -2.95, 1e3, map=None)
     """
-
+    #os.remove("map.html")
     if not map:
         map = folium.Map(location=[lat, lon], control_scale=True)
-
+        
     folium.Circle([lat, lon], radius, fill=True,
-                  fillOpacity=0.6, **kwargs).add_to(map)
-
+                   fillOpacity=0.8, **kwargs).add_to(map)
+    map.save("map.html")
+    
     return map
+
+plot_circle(52.79, -2.95, 1e3, map=None)
