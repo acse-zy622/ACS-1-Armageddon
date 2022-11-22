@@ -30,9 +30,10 @@ def great_circle_distance(latlon1, latlon2):
 
     >>> import numpy
     >>> fmt = lambda x: numpy.format_float_scientific(x, precision=3)}
-    >>> with numpy.printoptions(formatter={'all', fmt}):
-        print(great_circle_distance([[54.0, 0.0], [55, 0.0]], [55, 1.0]))
-    [1.286e+05 6.378e+04]
+    >>> with numpy.printoptions(formatter={'all': fmt}):
+       print(great_circle_distance([[54.0, 0.0], [55, 0.0]], [55, 1.0]))
+    [[1.286e+05]
+     [6.378e+04]]
     """
     Rp = 6371000
     
@@ -60,17 +61,17 @@ def great_circle_distance(latlon1, latlon2):
             num = np.sqrt((np.cos(lat2[j])*np.sin(abs(lon1[i]-lon2[j])))**2+(np.cos(lat1[i])*np.sin(lat2[j])-np.sin(lat1[i])*np.cos(lat2[j])*np.cos(abs(lon1[i]-lon2[j])))**2)
             den = np.sin(lat1[i])*np.sin(lat2[j])+np.cos(lat1[i])*np.cos(lat2[j])*np.cos(abs(lon1[i]-lon2[j]))
             dis = Rp*np.arctan(num/den)
-            print(num, den)
-            
             distance[i][j] = dis
     return distance
 
-fmt = lambda x: np.format_float_scientific(x, precision=3)
-with np.printoptions(formatter={'all', fmt}):
-    print(great_circle_distance([[54.0, 0.0], [55, 0.0]], [55, 1.0]))
-#pnts1 = np.array([[54.0, 0.0], [55.0, 1.0], [54.2, -3.0]])
-#pnts2 = np.array([[55.0, 1.0], [56.0, -2.1], [54.001, -0.003]])
-#print(great_circle_distance(pnts1, pnts2))
+pnts3 = np.array([[54.0, 0.0], [55.0, 1.0], [54.2, -3.0]])
+pnts4 = np.array([[66.0, 1.5], [56.0, -3.1]])
+fmt = lambda x: np.format_float_scientific(x, precision=9)
+with np.printoptions(formatter={'all': fmt}):
+    print(great_circle_distance(pnts3, pnts4))
+# pnts1 = np.array([[54.0, 0.0], [55.0, 1.0], [54.2, -3.0]])
+# pnts2 = np.array([[55.0, 1.0], [56.0, -2.1], [54.001, -0.003]])
+
 
 
 
