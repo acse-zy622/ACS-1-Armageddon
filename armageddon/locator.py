@@ -37,8 +37,8 @@ def great_circle_distance(latlon1, latlon2):
     Rp = 6371000
     
     
-    latlon1 = np.array(latlon1)
-    latlon2 = np.array(latlon2)
+    latlon1 = np.array(latlon1)*np.pi/180
+    latlon2 = np.array(latlon2)*np.pi/180
     
     if latlon1.ndim == 1:
         latlon1 = latlon1.reshape(1,2)
@@ -77,6 +77,8 @@ pnts1 = np.array([[54.0, 0.0], [55.0, 1.0], [54.2, -3.0]])
 pnts2 = np.array([[55.0, 1.0], [56.0, -2.1], [54.001, -0.003]])
 print(great_circle_distance(pnts1, pnts2))
 #print(np.array([55, 1.0]).reshape(1,2))
+#print((55/180)*np.pi)
+
 
 
 class PostcodeLocator(object):
