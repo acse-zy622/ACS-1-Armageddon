@@ -146,5 +146,5 @@ Function API
 ============
 
 .. automodule:: armageddon
-  :members:
-  :imported-members:
+  :members: 
+  :imported-members: 
