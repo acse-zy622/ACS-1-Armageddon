@@ -35,8 +35,8 @@ def plot_circle(lat, lon, radius, map=None, **kwargs):
         
     folium.Circle([lat, lon], radius, fill=True,
                    fillOpacity=0.8, **kwargs).add_to(map)
-    map.save("map.html")
+    #map.save("map.html")
     
     return map
 
-plot_circle(52.79, -2.95, 1e3, map=None)
+

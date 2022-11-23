@@ -30,44 +30,72 @@ def great_circle_distance(latlon1, latlon2):
     --------
 
     >>> import numpy
-    >>> fmt = lambda x: numpy.format_float_scientific(x, precision=3)}
+    >>> fmt = lambda x: numpy.format_float_scientific(x, precision=3)
     >>> with numpy.printoptions(formatter={'all': fmt}):
         print(great_circle_distance([[54.0, 0.0], [55, 0.0]], [55, 1.0]))
     [[1.286e+05]
      [6.378e+04]]
     """
-    Rp = 6371000
+    # Rp = 6371000
     
     
-    latlon1 = np.array(latlon1)*np.pi/180
-    latlon2 = np.array(latlon2)*np.pi/180
+    # latlon1 = np.array(latlon1)*np.pi/180
+    # latlon2 = np.array(latlon2)*np.pi/180
     
-    if latlon1.ndim == 1:
-        latlon1 = latlon1.reshape(1,2)
+    # if latlon1.ndim == 1:
+    #     latlon1 = latlon1.reshape(1,2)
 
-    if latlon2.ndim == 1:
-        latlon2 = latlon2.reshape(1,2)
+    # if latlon2.ndim == 1:
+    #     latlon2 = latlon2.reshape(1,2)
     
-    distance = np.empty((len(latlon1), len(latlon2)), float)
+    # distance = np.empty((len(latlon1), len(latlon2)), float)
+    # lat1 = latlon1[:, 0]
+    # lat2 = latlon2[:, 0]
+    # lon1 = latlon1[:, 1]
+    # lon2 = latlon2[:, 1]
+
+
+    # for i in range(len(latlon1)):
+        
+    #     for j in range(len(latlon2)):
+            
+    #         num = np.sqrt((np.cos(lat2[j])*np.sin(abs(lon1[i]-lon2[j])))**2+(np.cos(lat1[i])*np.sin(lat2[j])-np.sin(lat1[i])*np.cos(lat2[j])*np.cos(abs(lon1[i]-lon2[j])))**2)
+    #         den = np.sin(lat1[i])*np.sin(lat2[j])+np.cos(lat1[i])*np.cos(lat2[j])*np.cos(abs(lon1[i]-lon2[j]))
+    #         dis = Rp*np.arctan(num/den)
+    #         distance[i][j] = dis
+    # fmt = lambda x: np.format_float_scientific(x, precision=3)
+    # with np.printoptions(formatter={'all': fmt}):
+    #     return distance
+
+    R_p = 6371e3
+    latlon1 = np.array(latlon1) * np.pi / 180
+    latlon2 = np.array(latlon2) * np.pi / 180
+    if (latlon1.ndim == 1):
+        latlon1 = latlon1.reshape(1, *latlon1.shape)
+    if (latlon2.ndim == 1):
+        latlon2 = latlon2.reshape(1, *latlon2.shape)
     lat1 = latlon1[:, 0]
     lat2 = latlon2[:, 0]
     lon1 = latlon1[:, 1]
     lon2 = latlon2[:, 1]
+    lon_diff = np.abs(
+        (lon1.reshape(len(lon1), 1)) -
+        (lon2.reshape(1, len(lon2)))
+    )
+    distance = np.arccos(
+        np.sin(lat1).reshape(len(lat1), 1)*np.sin(lat2).reshape(1, len(lat2)) +
+        np.cos(lat1).reshape(len(lat1), 1)*np.cos(lat2).reshape(1, len(lat2)) *
+        np.cos(lon_diff)
+    ) * R_p
+    return distance
+a = great_circle_distance([[54.0, 0.0], [55, 0.0]], [55, 1.0])
+fmt = lambda x: np.format_float_scientific(x, precision=9)
+np.set_printoptions(formatter={'all': fmt})
+#print(a)
+pnts1 = np.array([[54.0, 0.0], [55.0, 1.0], [54.2, -3.0]])
+pnts2 = np.array([[55.0, 1.0], [56.0, -2.1], [54.001, -0.003]])
+print(great_circle_distance(pnts1,pnts2))
 
-
-    for i in range(len(latlon1)):
-        
-        for j in range(len(latlon2)):
-            
-            num = np.sqrt((np.cos(lat2[j])*np.sin(abs(lon1[i]-lon2[j])))**2+(np.cos(lat1[i])*np.sin(lat2[j])-np.sin(lat1[i])*np.cos(lat2[j])*np.cos(abs(lon1[i]-lon2[j])))**2)
-            den = np.sin(lat1[i])*np.sin(lat2[j])+np.cos(lat1[i])*np.cos(lat2[j])*np.cos(abs(lon1[i]-lon2[j]))
-            dis = Rp*np.arctan(num/den)
-            distance[i][j] = dis
-    fmt = lambda x: np.format_float_scientific(x, precision=3)
-    with np.printoptions(formatter={'all': fmt}):
-        return distance
-
-    
 
 
 class PostcodeLocator(object):
