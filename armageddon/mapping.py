@@ -35,18 +35,21 @@ def plot_circle(lat, lon, radius, map=None, **kwargs):
         
     folium.Circle([lat, lon], radius, fill=True,
                    fillOpacity=0.8, **kwargs).add_to(map)
-    map.save("map.html")
+    # map.save("map.html")
     
     return map
 
-def damage_map(blat, blon, damrad):
+def damage_map(blat, blon, damrad, lat, lon):
+    damrad = damrad[::-1]
     for rad_index in range(len(damrad)):
         if rad_index == 0:
             map = plot_circle(
                 blat, blon,
                 damrad[rad_index],
-                map=None
+                map=None,
+                color='red'
             )
+            folium.PolyLine([[lat, lon], [blat, blon]], color='black').add_to(map)
         else:
             map = plot_circle(
                 blat, blon,
@@ -55,6 +58,5 @@ def damage_map(blat, blon, damrad):
             )
     return map
 
-import folium
-a = plot_circle(51.4981, -0.1773, 0.2e3, map=None)
-plot_circle(51.4981, -0.1773, 0.4e3, map=a)
+
+
