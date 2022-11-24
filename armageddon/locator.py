@@ -2,12 +2,11 @@
 
 import numpy as np
 import pandas as pd
+import os
 
 def get_sector_code(code):
     code = code[:-2]
-    code = code.replace(' ', '')
-    code = code.replace(' ', '')
-    code = code[:-1] + ' ' + code[-1]
+    code = code.replace(' ', '  ')
     return code
 
 
@@ -35,72 +34,75 @@ def great_circle_distance(latlon1, latlon2):
     --------
 
     >>> import numpy
-    >>> fmt = lambda x: numpy.format_float_scientific(x, precision=3)}
-    >>> with numpy.printoptions(formatter={'all', fmt}):
+    >>> fmt = lambda x: numpy.format_float_scientific(x, precision=3)
+    >>> with numpy.printoptions(formatter={'all': fmt}):
         print(great_circle_distance([[54.0, 0.0], [55, 0.0]], [55, 1.0]))
     [1.286e+05 6.378e+04]
     """
-    Rp = 6371000
+    # Rp = 6371000
     
     
-    latlon1 = np.array(latlon1)*np.pi/180
-    latlon2 = np.array(latlon2)*np.pi/180
+    # latlon1 = np.array(latlon1)*np.pi/180
+    # latlon2 = np.array(latlon2)*np.pi/180
     
-    if latlon1.ndim == 1:
-        latlon1 = latlon1.reshape(1,2)
+    # if latlon1.ndim == 1:
+    #     latlon1 = latlon1.reshape(1,2)
 
-    if latlon2.ndim == 1:
-        latlon2 = latlon2.reshape(1,2)
+    # if latlon2.ndim == 1:
+    #     latlon2 = latlon2.reshape(1,2)
     
-    distance = np.empty((len(latlon1), len(latlon2)), float)
-    lat1 = latlon1[:, 0]
-    lat2 = latlon2[:, 0]
-    lon1 = latlon1[:, 1]
-    lon2 = latlon2[:, 1]
-
-
-    for i in range(len(latlon1)):
-        
-        for j in range(len(latlon2)):
-            
-            num = np.sqrt((np.cos(lat2[j])*np.sin(abs(lon1[i]-lon2[j])))**2+(np.cos(lat1[i])*np.sin(lat2[j])-np.sin(lat1[i])*np.cos(lat2[j])*np.cos(abs(lon1[i]-lon2[j])))**2)
-            den = np.sin(lat1[i])*np.sin(lat2[j])+np.cos(lat1[i])*np.cos(lat2[j])*np.cos(abs(lon1[i]-lon2[j]))
-            dis = Rp*np.arctan(num/den)
-            distance[i][j] = dis
-    fmt = lambda x: np.format_float_scientific(x, precision=3)
-    with np.printoptions(formatter={'all': fmt}):
-        return distance
-
-    # R_p = 6371e3
-    # latlon1 = np.array(latlon1) * np.pi / 180
-    # latlon2 = np.array(latlon2) * np.pi / 180
-    # if (latlon1.ndim == 1):
-    #     latlon1 = latlon1.reshape(1, *latlon1.shape)
-    # if (latlon2.ndim == 1):
-    #     latlon2 = latlon2.reshape(1, *latlon2.shape)
+    # distance = np.empty((len(latlon1), len(latlon2)), float)
     # lat1 = latlon1[:, 0]
     # lat2 = latlon2[:, 0]
     # lon1 = latlon1[:, 1]
     # lon2 = latlon2[:, 1]
-    # lon_diff = np.abs(
-    #     (lon1.reshape(len(lon1), 1)) -
-    #     (lon2.reshape(1, len(lon2)))
-    # )
-    # distance = np.arccos(
-    #     np.sin(lat1).reshape(len(lat1), 1)*np.sin(lat2).reshape(1, len(lat2)) +
-    #     np.cos(lat1).reshape(len(lat1), 1)*np.cos(lat2).reshape(1, len(lat2)) *
-    #     np.cos(lon_diff)
-    # ) * R_p
-    # return distance
 
+
+    # for i in range(len(latlon1)):
+        
+    #     for j in range(len(latlon2)):
+            
+    #         num = np.sqrt((np.cos(lat2[j])*np.sin(abs(lon1[i]-lon2[j])))**2+(np.cos(lat1[i])*np.sin(lat2[j])-np.sin(lat1[i])*np.cos(lat2[j])*np.cos(abs(lon1[i]-lon2[j])))**2)
+    #         den = np.sin(lat1[i])*np.sin(lat2[j])+np.cos(lat1[i])*np.cos(lat2[j])*np.cos(abs(lon1[i]-lon2[j]))
+    #         dis = Rp*np.arctan(num/den)
+    #         distance[i][j] = dis
+    # fmt = lambda x: np.format_float_scientific(x, precision=3)
+    # with np.printoptions(formatter={'all': fmt}):
+    #     return distance
+
+    R_p = 6371e3
+    latlon1 = np.array(latlon1) * np.pi / 180
+    latlon2 = np.array(latlon2) * np.pi / 180
+    if (latlon1.ndim == 1):
+        latlon1 = latlon1.reshape(1, *latlon1.shape)
+    if (latlon2.ndim == 1):
+        latlon2 = latlon2.reshape(1, *latlon2.shape)
+    lat1 = latlon1[:, 0]
+    lat2 = latlon2[:, 0]
+    lon1 = latlon1[:, 1]
+    lon2 = latlon2[:, 1]
+    lon_diff = np.abs(
+        (lon1.reshape(len(lon1), 1)) -
+        (lon2.reshape(1, len(lon2)))
+    )
+    distance = np.arccos(
+        np.sin(lat1).reshape(len(lat1), 1)*np.sin(lat2).reshape(1, len(lat2)) +
+        np.cos(lat1).reshape(len(lat1), 1)*np.cos(lat2).reshape(1, len(lat2)) *
+        np.cos(lon_diff)
+    ) * R_p
+    return distance
 
 
 
 class PostcodeLocator(object):
     """Class to interact with a postcode database file."""
 
-    def __init__(self, postcode_file='resources/full_postcodes.csv',
-                 census_file='resources/population_by_postcode_sector.csv',
+    def __init__(self, postcode_file=os.sep.join((os.path.dirname(__file__), '..',
+                                                  'resources',
+                                                  'full_postcodes.csv')),
+                 census_file=os.sep.join((os.path.dirname(__file__), '..',
+                                          'resources',
+                                          'population_by_postcode_sector.csv')),
                  norm=great_circle_distance):
         """
         Parameters
@@ -118,6 +120,7 @@ class PostcodeLocator(object):
             latitude-longitude space.
 
         """
+       
         self.postcode_df = pd.read_csv(postcode_file)
         self.postcode_df['Sector_Postcode'] = self.postcode_df.apply(
             lambda row: get_sector_code(row['Postcode']), axis=1
@@ -200,7 +203,6 @@ class PostcodeLocator(object):
         >>> pop2
         [[2283.0]]
         """
-
         col = 'Variable: All usual residents; measures: Value'
         global_pc = []
         for pc_list in postcodes:
@@ -234,3 +236,12 @@ class PostcodeLocator(object):
                             target[col].values[0] / pc_count))
             global_pc.append(nested_pc)
         return global_pc
+
+
+
+# locator = PostcodeLocator('resources/full_postcodes.csv', 'resources/population_by_postcode_sector.csv')
+# locator.get_postcodes_by_radius((51.4981, -0.1773), [0.13e3])
+# print(locator.get_postcodes_by_radius((51.4981, -0.1773), [0.4e3, 0.2e3], True))
+# locator = PostcodeLocator('resources/full_postcodes.csv', 'resources/population_by_postcode_sector.csv')
+# pop1 = locator.get_population_of_postcode([['SW7 2AZ', 'SW7 2BT', 'SW7 2BU', 'SW7 2DD']])
+# print(pop1)

@@ -111,7 +111,7 @@ def test_analyse_outcome(planet, outcome):
                 'burst_distance', 'burst_energy'):
         assert key in outcome.keys()
 
-@mark.xfail
+
 def test_damage_zones(armageddon):
 
     outcome = {'burst_peak_dedz': 1000.,
