@@ -1,4 +1,4 @@
-from .solver import Planet
+from solver import Planet
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
